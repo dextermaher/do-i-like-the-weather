@@ -1,31 +1,18 @@
 import React, { Component } from 'react';
+import './MainUI.css';
 
-class TestUI extends Component {
+class MainUI extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currentTemp : '--',
-            currentConditions : '--',
+            currentTemp : undefined,
+            currentConditions : undefined,
             conditionsImageURL : undefined,
             reactionURL : undefined,    
         }
 
         this.updateWeatherInfo();
-      }
-      setTemp = (ev) => {
-        ev.preventDefault(); 
-        const cur = this.state.currentTemp;
-        const u1 = this.state.conditionsImageURL;
-        const u2 = this.state.reactionURL;
-    
-        this.setState(
-          {
-            currentTemp : cur + 10,
-            conditionsImageURL : u2,
-            weatherExampleURL : u1,
-          }
-        );
       }
       updateWeatherInfo() {
         this.fetchCurrentConditions()
@@ -74,7 +61,7 @@ class TestUI extends Component {
                     { 
                         const photoData = flickrSearchResponse.photos.photo[0];
                         const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
-                        this.setState({ weatherExampleURL : photoUrl })
+                        this.setState({ conditionsImageURL : photoUrl })
                     })
                     .catch((er) =>{
                         console.log(er);
@@ -85,7 +72,7 @@ class TestUI extends Component {
         const {currentConditions} = this.state;
         // encodeURI('http://www.here.com/this that')
 
-        let phrase = `${currentConditions || 'foggy'} person`;
+        let phrase = `${currentConditions || 'foggy'} dog`;
 
         const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
@@ -93,42 +80,38 @@ class TestUI extends Component {
                     { 
                         const photoData = flickrSearchResponse.photos.photo[0];
                         const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
-                        this.setState({ conditionsImageURL : photoUrl })
+                        this.setState({ reactionURL : photoUrl })
                     })
                     .catch((er) =>{
                         console.log(er);
                     })
       }
-    
       render() {
         const { currentTemp, 
-                currentConditions, 
-                conditionsImageURL, 
-                reactionURL,
-            } = this.state;
-    
+            currentConditions, 
+            conditionsImageURL, 
+            reactionURL,
+        } = this.state;
         
         return (
-          <div>
-            <div className='toolbar'>
-              <a href="/" onClick={this.setTemp}>Change Temp</a>
+            <div className='mainWrapper'>
+                <img className='backgroundImage' src={conditionsImageURL}/>
+                <div className='contentArea'>
+                    <img alt="" className='reactionImage' src={reactionURL} />
+
+
+                    <div className='conditionsArea'>
+                        <div className='tempurature'>
+                            {currentTemp}
+                        </div>
+                        <div className='condition'>
+                            {currentConditions}
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className='testToolArea'>        
-              <div className='toolItem'>
-                <div>Weather</div>
-                <div>{currentTemp}</div>
-                <div>{currentConditions}</div>
-                <img alt="" className='testImage' src={conditionsImageURL} />
-              </div>
-    
-              <div className='toolItem'>
-                <div>Flickr</div>
-                <img alt="" className='testImage' src={reactionURL} />
-              </div>
-            </div>
-          </div>
         );
-      }
+    }
 }
 
-export default TestUI;
+export default MainUI;

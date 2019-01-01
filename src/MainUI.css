@@ -1,0 +1,39 @@
+.mainWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+.backgroundImage {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -1; 
+
+}
+.contentArea {
+    width: 50%;
+
+}
+.reactionImage {
+    width: 100%;
+    border-radius: 30px;
+}
+.conditionsArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3em;
+    color: #0e0e0e;
+    background: #dad9dc5c;
+    margin-top: 1em;
+    border-radius: 30px;
+}
+.tempurature {
+    font-family: 'Fredoka One', sans-serif;
+
+}
+.condition {
+    margin-left: 0.5em;
+    font-family: 'Montserrat', sans-serif;
+}

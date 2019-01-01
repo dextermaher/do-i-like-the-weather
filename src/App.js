@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import TestUI from './TestUI';
+// import TestUI from './TestUI';
 import './App.css';
+import MainUI from './MainUI';
 
 class App extends Component {
 
@@ -8,7 +9,7 @@ class App extends Component {
 
     return (
       <div>
-        <TestUI />
+        <MainUI />
       </div>
     );
   }
