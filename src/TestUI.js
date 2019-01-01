@@ -7,8 +7,8 @@ class TestUI extends Component {
         this.state = {
             currentTemp : '--',
             currentConditions : '--',
-            conditionsImageURL : 'https://pbs.twimg.com/profile_images/966804932866162688/RsZEA9iJ.jpg',
-            weatherExampleURL : 'https://cdn-images-1.medium.com/max/1200/1*_EP0OeIPcQf-XiDyRSkoAQ.jpeg',    
+            conditionsImageURL : undefined,
+            weatherExampleURL : undefined,    
         }
 
         this.updateWeatherInfo();
@@ -30,7 +30,8 @@ class TestUI extends Component {
       updateWeatherInfo() {
         this.fetchCurrentConditions()
             .then(() => {
-                this.fetchPhotoForPhrase();
+                this.fetchBackgroundImage();
+                this.fetchReactionImage();
             }) 
             .catch((er) =>{
                 console.log(er);
@@ -56,7 +57,7 @@ class TestUI extends Component {
                     })
       }
 
-      fetchPhotoForPhrase() {
+      fetchBackgroundImage() {
         const {currentConditions} = this.state;
         // encodeURI('http://www.here.com/this that')
 
@@ -65,15 +66,34 @@ class TestUI extends Component {
         // phrase = 'cloudy';
         // phrase = 'snow';
         // phrase = 'hail';
-        
+
 // todo: use flickr group to search
-        const photoDataUrl = `https://api.flickr.com/services/rest/?FLICKR&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
+        const photoDataUrl = `https://api.flickr.com/services/rest/?BACKGROUND&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
                    .then( (flickrSearchResponse) => 
                     { 
                         const photoData = flickrSearchResponse.photos.photo[0];
                         const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
                         this.setState({ weatherExampleURL : photoUrl })
+                    })
+                    .catch((er) =>{
+                        console.log(er);
+                    })
+      }
+
+      fetchReactionImage() {
+        const {currentConditions} = this.state;
+        // encodeURI('http://www.here.com/this that')
+
+        let phrase = `${currentConditions || 'foggy'} person`;
+
+        const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
+        fetch(photoDataUrl).then((fresp) => fresp.json())
+                   .then( (flickrSearchResponse) => 
+                    { 
+                        const photoData = flickrSearchResponse.photos.photo[0];
+                        const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
+                        this.setState({ conditionsImageURL : photoUrl })
                     })
                     .catch((er) =>{
                         console.log(er);
