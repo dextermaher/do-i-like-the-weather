@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    flex-direction: column;
 }
 .backgroundImage {
     width: 100%;
@@ -36,4 +37,8 @@
 .condition {
     margin-left: 0.5em;
     font-family: 'Montserrat', sans-serif;
+}
+.zipCode {
+    position: absolute;
+    color: red;
 }

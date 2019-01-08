@@ -9,7 +9,8 @@ class MainUI extends Component {
             currentTemp : undefined,
             currentConditions : undefined,
             conditionsImageURL : undefined,
-            reactionURL : undefined,    
+            reactionURL : undefined,   
+            zipCode : '94945', 
         }
 
         this.updateWeatherInfo();
@@ -72,7 +73,7 @@ class MainUI extends Component {
         const {currentConditions} = this.state;
         // encodeURI('http://www.here.com/this that')
 
-        let phrase = `${currentConditions || 'foggy'} dog`;
+        let phrase = `${currentConditions || 'foggy'} symbol`;
 
         const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
@@ -91,10 +92,28 @@ class MainUI extends Component {
             currentConditions, 
             conditionsImageURL, 
             reactionURL,
+            zipCode,
         } = this.state;
         
         return (
             <div className='mainWrapper'>
+                
+                Zip Code: ({zipCode})
+                <input 
+                    className='zipCode' 
+                    type="text" 
+                    name="zip" 
+                    value={zipCode}
+                    onChange={(ev)=>{
+                        this.setState({zipCode: ev.target.value});
+                    }} />
+                <input className='enterButton' 
+                        type="button" 
+                        value="Enter" 
+                        onClick={(ev)=>{
+                            console.log('ouch')
+                        }} />
+                
                 <img className='backgroundImage' src={conditionsImageURL}/>
                 <div className='contentArea'>
                     <img alt="" className='reactionImage' src={reactionURL} />
