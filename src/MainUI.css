@@ -4,6 +4,10 @@
     justify-content: center;
     height: 100vh;
     flex-direction: column;
+    color: black;
+    font-family: 'Montserrat', sans-serif;
+    
+
 }
 .backgroundImage {
     width: 100%;
@@ -39,6 +43,11 @@
     font-family: 'Montserrat', sans-serif;
 }
 .zipCode {
-    position: absolute;
-    color: red;
+    /* position: absolute; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(255, 0, 170);
+    border: 2px solid rgb(98, 0, 255);
+    border-radius: 4px;
 }

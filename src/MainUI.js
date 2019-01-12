@@ -50,7 +50,7 @@ class MainUI extends Component {
         const { currentConditions } = this.state;
         // encodeURI('http://www.here.com/this that')
 
-        let phrase = `${currentConditions || 'foggy'} skies`;
+        let phrase = `${currentConditions || 'foggy'} weather`;
         // phrase = 'rain';
         // phrase = 'cloudy';
         // phrase = 'snow';
@@ -73,7 +73,7 @@ class MainUI extends Component {
         const { currentConditions } = this.state;
         // encodeURI('http://www.here.com/this that')
 
-        let phrase = `${currentConditions || 'foggy'} symbol`;
+        let phrase = `person in ${currentConditions || 'foggy'} weather`;
 
         const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
