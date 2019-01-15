@@ -45,22 +45,31 @@ class MainUI extends Component {
                 console.log(er);
             })
     }
+    rand(min, max) {
+        return Math.floor(Math.random() * (max-min) + min);
+    } 
+    randItem(array) {
+        if (!array || !array.length) {
+            return null;
+        }
 
+        return array[this.rand(0, array.length - 1)];
+    }
     fetchBackgroundImage() {
         const { currentConditions } = this.state;
         // encodeURI('http://www.here.com/this that')
 
-        let phrase = `${currentConditions || 'foggy'} weather`;
+        let phrase = `${currentConditions.toLowerCase() || 'foggy'}`;
         // phrase = 'rain';
         // phrase = 'cloudy';
         // phrase = 'snow';
         // phrase = 'hail';
-
+        phrase='person';
         // todo: use flickr group to search
-        const photoDataUrl = `https://api.flickr.com/services/rest/?BACKGROUND&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
+        const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=22a8a26f96dfb6b035ab2bb1d50cbaae&group_id=86784386%40N00&tags=${phrase}&format=json&nojsoncallback=1&auth_token=72157702443479932-3fd7fd021c6a37b4&api_sig=283a10c6b65776d3411f07ec924ec1b3`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
             .then((flickrSearchResponse) => {
-                const photoData = flickrSearchResponse.photos.photo[0];
+                const photoData = this.randItem(flickrSearchResponse.photos.photo);
                 const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
                 this.setState({ conditionsImageURL: photoUrl })
             })
@@ -78,7 +87,7 @@ class MainUI extends Component {
         const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
             .then((flickrSearchResponse) => {
-                const photoData = flickrSearchResponse.photos.photo[0];
+                const photoData = this.randItem(flickrSearchResponse.photos.photo);
                 const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
                 this.setState({ reactionURL: photoUrl })
             })
