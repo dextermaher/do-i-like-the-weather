@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import './MainUI.css';
 
+const CONDITIONS = {
+    SUNNY : 'SUNNY',
+    CLOUDY : 'CLOUDY',
+    RAINY : 'RAINY',
+    SNOWY : 'SNOWY',
+}
 class MainUI extends Component {
     constructor(props) {
         super(props);
@@ -52,21 +58,79 @@ class MainUI extends Component {
         if (!array || !array.length) {
             return null;
         }
-
+        
         return array[this.rand(0, array.length - 1)];
     }
+    
     fetchBackgroundImage() {
         const { currentConditions } = this.state;
-        // encodeURI('http://www.here.com/this that')
+        let conditionCode = null;
+        
+        // MAP CONDITIONS
+        switch (currentConditions.toLowerCase()) {
+            case "sunny":
+            case "clear":
+            case "mostly sunny":
+            case "partly sunny":
+            case "hazy sunshine":
+            case "mostly clear":
+            case "hot":
+                conditionCode = CONDITIONS.SUNNY
+                break;
+            
+            case "cloudy":
+            case "fog":
+            case "intermittent clouds":
+            case "mostly cloudy":
+            case "dreaery":
+            case "hazy moonlight":
+            case "partly cloudy":
+            case "windy":
+                conditionCode = CONDITIONS.CLOUDY
+                break;
+            
+            case "rain":
+            case 'showers': 
+            case 'mostly cloudy with showers': 
+            case 'partly sunny with showers': 
+            case 'partly cloudy with showers':
+                conditionCode = CONDITIONS.RAINY
+                break;
+                
+            case 'snow': 
+            case 'ice': 
+            case 'sleet': 
+            case 'freezing rain': 
+            case 'rain and snow': 
+            case 'thunder storms' : 
+            case 'partly sunny with thunder storms' : 
+            case 'flurries' : 
+            case 'partly sunny with flurries' : 
+            case 'mostly cloudy with snow' : 
+            case 'cold' : 
+            case 'partly cloudy with thunder storms' : 
+            case 'mostly cloudy with thunder storms' : 
+            case 'mostly cloudy with flurries' : 
+                conditionCode = CONDITIONS.SNOWY
+                break;
 
-        let phrase = `${currentConditions.toLowerCase() || 'foggy'}`;
+            default : 
+                conditionCode = CONDITIONS.SNOWY;
+        }
+        
+    console.log(conditionCode);
+    
+        // encodeURI('http://www.here.com/this that')
+        let phrase = `${currentConditions || 'foggy'}`;
         // phrase = 'rain';
         // phrase = 'cloudy';
         // phrase = 'snow';
         // phrase = 'hail';
-        phrase='person';
+        // phrase='person';
         // todo: use flickr group to search
-        const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=22a8a26f96dfb6b035ab2bb1d50cbaae&group_id=86784386%40N00&tags=${phrase}&format=json&nojsoncallback=1&auth_token=72157702443479932-3fd7fd021c6a37b4&api_sig=283a10c6b65776d3411f07ec924ec1b3`;
+        // const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=22a8a26f96dfb6b035ab2bb1d50cbaae&group_id=86784386%40N00&tags=${phrase}&format=json&nojsoncallback=1&auth_token=72157702443479932-3fd7fd021c6a37b4&api_sig=283a10c6b65776d3411f07ec924ec1b3`;
+            const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&text=${phrase}&format=json&nojsoncallback=1&perpage=5`;
+
         fetch(photoDataUrl).then((fresp) => fresp.json())
             .then((flickrSearchResponse) => {
                 const photoData = this.randItem(flickrSearchResponse.photos.photo);
@@ -147,7 +211,7 @@ class MainUI extends Component {
                         this.fetchZipCode(ev);
                     }} />
 
-                <img className='backgroundImage' src={conditionsImageURL} />
+                <img className='backgroundImage' src={conditionsImageURL} alt="" />
                 <div className='contentArea'>
                     <img alt="" className='reactionImage' src={reactionURL} />
 
