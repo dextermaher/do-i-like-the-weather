@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import './MainUI.css';
 
+const HOWIFEEL = {
+    SUNNY: 'GREAT',
+    CLOUDY: 'DECENT',
+    RAINY: 'SAD',
+    SNOWY: 'DECENT',
+}
 const CONDITIONS = {
-    SUNNY : 'SUNNY',
-    CLOUDY : 'CLOUDY',
-    RAINY : 'RAINY',
-    SNOWY : 'SNOWY',
+    SUNNY: 'SUNNY',
+    CLOUDY: 'CLOUDY',
+    RAINY: 'RAINY',
+    SNOWY: 'SNOWY',
 }
 class MainUI extends Component {
     constructor(props) {
@@ -18,6 +24,7 @@ class MainUI extends Component {
             reactionURL: undefined,
             zipCode: 94945,
             locationKey: '39671_PC',
+            updateMins: 10,
         }
         this.updateWeatherInfo();
     }
@@ -26,6 +33,7 @@ class MainUI extends Component {
             .then(() => {
                 this.fetchBackgroundImage();
                 this.fetchReactionImage();
+                this.startUpdateTimer();
             })
             .catch((er) => {
                 console.log(er);
@@ -33,7 +41,7 @@ class MainUI extends Component {
     }
     fetchCurrentConditions() {
         console.log(this.state.locationKey, 'cond for this.state.locationKey');
-        
+
         const url = `http://dataservice.accuweather.com/currentconditions/v1/${this.state.locationKey}?ACCUWE&apikey=rvSVrxAEhkTPZ8Zzou6hLusbiaZAobB9`;
         return fetch(url).then((fresp) => fresp.json())
             .then((cwr) => {
@@ -52,20 +60,24 @@ class MainUI extends Component {
             })
     }
     rand(min, max) {
-        return Math.floor(Math.random() * (max-min) + min);
-    } 
+        return Math.floor(Math.random() * (max - min) + min);
+    }
     randItem(array) {
         if (!array || !array.length) {
             return null;
         }
-        
+
         return array[this.rand(0, array.length - 1)];
     }
-    
+    startUpdateTimer(){
+        setTimeout(() => {
+            this.updateWeatherInfo();
+        }, this.state.updateMins * 60 * 1000);  // mins * 60sec * 1000
+    }
     fetchBackgroundImage() {
         const { currentConditions } = this.state;
         let conditionCode = null;
-        
+
         // MAP CONDITIONS
         switch (currentConditions.toLowerCase()) {
             case "sunny":
@@ -77,7 +89,7 @@ class MainUI extends Component {
             case "hot":
                 conditionCode = CONDITIONS.SUNNY
                 break;
-            
+
             case "cloudy":
             case "fog":
             case "intermittent clouds":
@@ -88,40 +100,40 @@ class MainUI extends Component {
             case "windy":
                 conditionCode = CONDITIONS.CLOUDY
                 break;
-            
+
             case "rain":
-            case 'showers': 
-            case 'mostly cloudy with showers': 
-            case 'partly sunny with showers': 
+            case 'showers':
+            case 'mostly cloudy with showers':
+            case 'partly sunny with showers':
             case 'partly cloudy with showers':
                 conditionCode = CONDITIONS.RAINY
                 break;
-                
-            case 'snow': 
-            case 'ice': 
-            case 'sleet': 
-            case 'freezing rain': 
-            case 'rain and snow': 
-            case 'thunder storms' : 
-            case 'partly sunny with thunder storms' : 
-            case 'flurries' : 
-            case 'partly sunny with flurries' : 
-            case 'mostly cloudy with snow' : 
-            case 'cold' : 
-            case 'partly cloudy with thunder storms' : 
-            case 'mostly cloudy with thunder storms' : 
-            case 'mostly cloudy with flurries' : 
+
+            case 'snow':
+            case 'ice':
+            case 'sleet':
+            case 'freezing rain':
+            case 'rain and snow':
+            case 'thunder storms':
+            case 'partly sunny with thunder storms':
+            case 'flurries':
+            case 'partly sunny with flurries':
+            case 'mostly cloudy with snow':
+            case 'cold':
+            case 'partly cloudy with thunder storms':
+            case 'mostly cloudy with thunder storms':
+            case 'mostly cloudy with flurries':
                 conditionCode = CONDITIONS.SNOWY
                 break;
 
-            default : 
+            default:
                 conditionCode = CONDITIONS.SNOWY;
         }
-        
-    console.log(conditionCode);
-    
+
+        console.log(conditionCode);
+
         // encodeURI('http://www.here.com/this that')
-        let phrase = `${currentConditions || 'foggy'}`;
+        let phrase = `${conditionCode || 'foggy'} weather`;
         // phrase = 'rain';
         // phrase = 'cloudy';
         // phrase = 'snow';
@@ -129,7 +141,7 @@ class MainUI extends Component {
         // phrase='person';
         // todo: use flickr group to search
         // const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=22a8a26f96dfb6b035ab2bb1d50cbaae&group_id=86784386%40N00&tags=${phrase}&format=json&nojsoncallback=1&auth_token=72157702443479932-3fd7fd021c6a37b4&api_sig=283a10c6b65776d3411f07ec924ec1b3`;
-            const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&text=${phrase}&format=json&nojsoncallback=1&perpage=5`;
+        const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&text=${phrase}&format=json&nojsoncallback=1&perpage=5`;
 
         fetch(photoDataUrl).then((fresp) => fresp.json())
             .then((flickrSearchResponse) => {
@@ -144,9 +156,63 @@ class MainUI extends Component {
 
     fetchReactionImage() {
         const { currentConditions } = this.state;
+        let conditionCode = null;
+
+
+        // MAP CONDITIONS
+        switch (currentConditions.toLowerCase()) {
+            case "sunny":
+            case "clear":
+            case "mostly sunny":
+            case "partly sunny":
+            case "hazy sunshine":
+            case "mostly clear":
+            case "hot":
+                conditionCode = HOWIFEEL.SUNNY
+                break;
+
+            case "cloudy":
+            case "fog":
+            case "intermittent clouds":
+            case "mostly cloudy":
+            case "dreaery":
+            case "hazy moonlight":
+            case "partly cloudy":
+            case "windy":
+                conditionCode = HOWIFEEL.CLOUDY
+                break;
+
+            case "rain":
+            case 'showers':
+            case 'mostly cloudy with showers':
+            case 'partly sunny with showers':
+            case 'partly cloudy with showers':
+                conditionCode = HOWIFEEL.RAINY
+                break;
+
+            case 'snow':
+            case 'ice':
+            case 'sleet':
+            case 'freezing rain':
+            case 'rain and snow':
+            case 'thunder storms':
+            case 'partly sunny with thunder storms':
+            case 'flurries':
+            case 'partly sunny with flurries':
+            case 'mostly cloudy with snow':
+            case 'cold':
+            case 'partly cloudy with thunder storms':
+            case 'mostly cloudy with thunder storms':
+            case 'mostly cloudy with flurries':
+                conditionCode = HOWIFEEL.SNOWY
+                break;
+
+            default:
+                conditionCode = HOWIFEEL.SNOWY;
+        }
         // encodeURI('http://www.here.com/this that')
 
-        let phrase = `person in ${currentConditions || 'foggy'} weather`;
+        let phrase = `${conditionCode || 'foggy'}`;
 
         const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
@@ -161,6 +227,7 @@ class MainUI extends Component {
     }
 
     fetchZipCode(ev) {
+
         const { zipCode } = this.state;
         // encodeURI('http://www.here.com/this that')
 
