@@ -256,6 +256,10 @@ class MainUI extends Component {
     handleShowHideZipForm = (ev) => {
             this.setState({ shouldRenderZipCodeForm:!this.state.shouldRenderZipCodeForm });
     }
+    handleZipModalClose = () => {
+        console.log('oh!')
+        this.handleShowHideZipForm();
+    }
     render() {
         const { currentTemp,
             currentConditions,
@@ -272,7 +276,7 @@ class MainUI extends Component {
                     onClick={this.handleShowHideZipForm} />
                 
                 
-                {this.state.shouldRenderZipCodeForm && <ZipCodeForm />}
+                {this.state.shouldRenderZipCodeForm && <ZipCodeForm onClose={this.handleZipModalClose}/>}
                 
 
                 <img className={styles.backgroundImage} src={conditionsImageURL} alt="" />

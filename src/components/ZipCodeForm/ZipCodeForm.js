@@ -14,10 +14,14 @@ class ZipCodeForm extends Component {
         console.log(this);
         
     }
+    handleClose = (ev) => {
+        // console.log("ouch", ev.target)
+        this.props.onClose && this.props.onClose();
+    }
     render() {
         const { zipCode } = this.state;
         return (
-            <div className={styles.root}>
+            <div className={styles.root} onClick={this.handleClose}>
                 <div className={styles.modalBox}>
 
                     <div className={styles.zipLabel}>
