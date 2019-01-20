@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import './MainUI.css';
+import ZipCodeForm from '../ZipCodeForm/ZipCodeForm'
+import styles from './MainUI.module.css';
 
 const HOWIFEEL = {
     SUNNY: 'GREAT',
@@ -25,6 +26,7 @@ class MainUI extends Component {
             zipCode: 94945,
             locationKey: '39671_PC',
             updateMins: 10,
+            shouldRenderZipCodeForm : false,
         }
         this.updateWeatherInfo();
     }
@@ -251,6 +253,9 @@ class MainUI extends Component {
                 console.log(er);
             })
     }
+    handleShowHideZipForm = (ev) => {
+            this.setState({ shouldRenderZipCodeForm:!this.state.shouldRenderZipCodeForm });
+    }
     render() {
         const { currentTemp,
             currentConditions,
@@ -260,33 +265,25 @@ class MainUI extends Component {
         } = this.state;
 
         return (
-            <div className='mainWrapper'>
-
-                Zip Code: ({zipCode})
-                <input
-                    className='zipCode'
-                    type="text"
-                    name="zip"
-                    value={zipCode}
-                    onChange={(ev) => {
-                        this.setState({ zipCode: ev.target.value });
-                    }} />
-                <input className='enterButton'
+            <div className={styles.root} >
+                <input className={styles.enterButton}
                     type="button"
-                    value="Enter"
-                    onClick={(ev) => {
-                        this.fetchZipCode(ev);
-                    }} />
+                    value="zip form"
+                    onClick={this.handleShowHideZipForm} />
+                
+                
+                {this.state.shouldRenderZipCodeForm && <ZipCodeForm />}
+                
 
-                <img className='backgroundImage' src={conditionsImageURL} alt="" />
-                <div className='contentArea'>
-                    <img alt="" className='reactionImage' src={reactionURL} />
+                <img className={styles.backgroundImage} src={conditionsImageURL} alt="" />
+                <div className={styles.contentArea} >
+                    <img alt="" className={styles.reactionImage} src={reactionURL} />
 
-                    <div className='conditionsArea'>
-                        <div className='tempurature'>
+                    <div className={styles.conditionsArea} >
+                        <div className={styles.tempurature} >
                             {currentTemp}
                         </div>
-                        <div className='condition'>
+                        <div className={styles.condition} >
                             {currentConditions}
                         </div>
                     </div>
