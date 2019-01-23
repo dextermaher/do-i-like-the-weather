@@ -275,8 +275,10 @@ class MainUI extends Component {
                     value="zip form"
                     onClick={this.handleShowHideZipForm} />
                 
-                
-                {this.state.shouldRenderZipCodeForm && <ZipCodeForm onClose={this.handleZipModalClose}/>}
+                {/* SHOULD WE SHOW ZIP FORM */}
+                {this.state.shouldRenderZipCodeForm && 
+                    <ZipCodeForm onClose={this.handleZipModalClose} />
+                }
                 
 
                 <img className={styles.backgroundImage} src={conditionsImageURL} alt="" />

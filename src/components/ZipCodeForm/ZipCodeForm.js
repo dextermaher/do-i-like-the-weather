@@ -4,25 +4,55 @@ import styles from './ZipCodeForm.module.css'
 class ZipCodeForm extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             zipCode: 94945,
         }
     }
+    componentDidMount() {
+        document.addEventListener("keydown", this.escFunction, false);
+    }
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.escFunction, false);
+    }
+
+
     handleFormSubmit = (ev) => {
         // this.fetchZipCode(ev);
-        console.log(this);
-        
+        console.log("DO ZIP STUFF");
+
     }
-    handleClose = (ev) => {
-        // console.log("ouch", ev.target)
+    handleBackgroundClick = (ev) => {
+        if (ev.target !== this.bgRef) {
+            return;
+        }
+        if (this.state.clickIsOnModal) {
+            this.state.clickIsOnModal = false;
+            return
+        }
+        else {
+            this.doClose();
+        }
+    }
+
+    doClose(){
         this.props.onClose && this.props.onClose();
     }
+
+    escFunction = (event) => {
+        if (event.keyCode === 27) {
+            this.doClose(event);
+        }
+    }
+
+
     render() {
         const { zipCode } = this.state;
         return (
-            <div className={styles.root} onClick={this.handleClose}>
-                <div className={styles.modalBox}>
+            <div className={styles.root}
+                onClick={this.handleBackgroundClick}
+                ref={elem => this.bgRef = elem}>
+
+                <div className={styles.modalBox} >
 
                     <div className={styles.zipLabel}>
                         Zip Code: ({zipCode})
