@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+// import fetchZipCode from '../MainUI/MainUI'
 import styles from './ZipCodeForm.module.css'
 
 class ZipCodeForm extends Component {
@@ -19,7 +20,9 @@ class ZipCodeForm extends Component {
     handleFormSubmit = (ev) => {
         // this.fetchZipCode(ev);
         console.log("DO ZIP STUFF");
-
+        this.props.onSearch && this.props.onSearch(ev);
+        // this.fetchZipCode(ev);
+        this.doClose(ev);
     }
     handleBackgroundClick = (ev) => {
         if (ev.target !== this.bgRef) {

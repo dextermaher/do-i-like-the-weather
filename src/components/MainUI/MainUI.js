@@ -3,10 +3,10 @@ import ZipCodeForm from '../ZipCodeForm/ZipCodeForm'
 import styles from './MainUI.module.css';
 
 const HOWIFEEL = {
-    SUNNY: 'GREAT',
-    CLOUDY: 'DECENT',
+    SUNNY: 'HAPPY',
+    CLOUDY: 'DROWSY',
     RAINY: 'SAD',
-    SNOWY: 'DECENT',
+    SNOWY: 'DROWSY',
 }
 const CONDITIONS = {
     SUNNY: 'SUNNY',
@@ -27,6 +27,7 @@ class MainUI extends Component {
             locationKey: '39671_PC',
             updateMins: 10,
             shouldRenderZipCodeForm : false,
+            shouldChangeZipCode : false,
         }
         this.updateWeatherInfo();
     }
@@ -135,7 +136,7 @@ class MainUI extends Component {
         console.log(conditionCode);
 
         // encodeURI('http://www.here.com/this that')
-        let phrase = `${conditionCode || 'foggy'} weather`;
+        let phrase = `${conditionCode || 'foggy'} landscape`;
         // phrase = 'rain';
         // phrase = 'cloudy';
         // phrase = 'snow';
@@ -214,7 +215,7 @@ class MainUI extends Component {
         }
         // encodeURI('http://www.here.com/this that')
 
-        let phrase = `${conditionCode || 'foggy'}`;
+        let phrase = `${conditionCode || 'foggy'} dog`;
 
         const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
@@ -228,7 +229,7 @@ class MainUI extends Component {
             })
     }
 
-    fetchZipCode(ev) {
+    fetchZipCode = (ev) => {
 
         const { zipCode } = this.state;
         // encodeURI('http://www.here.com/this that')
@@ -243,10 +244,11 @@ class MainUI extends Component {
                 // console.log(usLocations, 'usLocations');
                 const key = usLocations.length ? usLocations[0].Key : null;
                 // console.log(key);
-
+                this.setState.shouldChangeZipCode = false;
                 if (key) {
                     this.setState({ locationKey: key });
                     this.updateWeatherInfo();
+                    this.setState.shouldRenderZipCodeForm = false;
                 }
             })
             .catch((er) => {
@@ -255,6 +257,7 @@ class MainUI extends Component {
     }
     handleShowHideZipForm = (ev) => {
             this.setState({ shouldRenderZipCodeForm:!this.state.shouldRenderZipCodeForm });
+            this.setState.shouldChangeZipCode = true;
     }
     handleZipModalClose = () => {
         console.log('oh!')
@@ -270,15 +273,19 @@ class MainUI extends Component {
 
         return (
             <div className={styles.root} >
-                <input className={styles.enterButton}
-                    type="button"
-                    value="zip form"
-                    onClick={this.handleShowHideZipForm} />
                 
+                <input className={styles.enterButton}
+                    type="image"
+                    src='https://cdn4.iconfinder.com/data/icons/web-ui-color/128/Settings-512.png'
+                    onClick={this.handleShowHideZipForm}/>
                 {/* SHOULD WE SHOW ZIP FORM */}
                 {this.state.shouldRenderZipCodeForm && 
-                    <ZipCodeForm onClose={this.handleZipModalClose} />
+                    <ZipCodeForm onClose={this.handleZipModalClose}  /> 
+
                 }
+                {this.state.shouldChangeZipCode &&
+                    <ZipCodeForm onSearch={this.fetchZipCode} />
+                    }
                 
 
                 <img className={styles.backgroundImage} src={conditionsImageURL} alt="" />
