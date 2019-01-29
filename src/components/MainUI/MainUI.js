@@ -27,7 +27,6 @@ class MainUI extends Component {
             locationKey: '39671_PC',
             updateMins: 10,
             shouldRenderZipCodeForm : false,
-            shouldChangeZipCode : false,
         }
         this.updateWeatherInfo();
     }
@@ -230,12 +229,10 @@ class MainUI extends Component {
     }
 
     fetchZipCode = (ev) => {
-
         const { zipCode } = this.state;
         // encodeURI('http://www.here.com/this that')
 
         let phrase = zipCode;
-
         const zipCodeURL = `http://dataservice.accuweather.com/locations/v1/postalcodes/search?apikey=rvSVrxAEhkTPZ8Zzou6hLusbiaZAobB9&q=${phrase}`;
         fetch(zipCodeURL).then((fresp) => fresp.json())
             .then((zipCodeResponse) => {
@@ -244,11 +241,10 @@ class MainUI extends Component {
                 // console.log(usLocations, 'usLocations');
                 const key = usLocations.length ? usLocations[0].Key : null;
                 // console.log(key);
-                this.setState.shouldChangeZipCode = false;
                 if (key) {
                     this.setState({ locationKey: key });
                     this.updateWeatherInfo();
-                    this.setState.shouldRenderZipCodeForm = false;
+                    this.setState({shouldRenderZipCodeForm: false});
                 }
             })
             .catch((er) => {
@@ -257,12 +253,13 @@ class MainUI extends Component {
     }
     handleShowHideZipForm = (ev) => {
             this.setState({ shouldRenderZipCodeForm:!this.state.shouldRenderZipCodeForm });
-            this.setState.shouldChangeZipCode = true;
+            
     }
+
     handleZipModalClose = () => {
-        console.log('oh!')
         this.handleShowHideZipForm();
     }
+
     render() {
         const { currentTemp,
             currentConditions,
@@ -280,13 +277,10 @@ class MainUI extends Component {
                     onClick={this.handleShowHideZipForm}/>
                 {/* SHOULD WE SHOW ZIP FORM */}
                 {this.state.shouldRenderZipCodeForm && 
-                    <ZipCodeForm onClose={this.handleZipModalClose}  /> 
+                    <ZipCodeForm onClose={this.handleZipModalClose} 
+                                    onSearch={this.fetchZipCode} /> 
 
-                }
-                {this.state.shouldChangeZipCode &&
-                    <ZipCodeForm onSearch={this.fetchZipCode} />
-                    }
-                
+                }                
 
                 <img className={styles.backgroundImage} src={conditionsImageURL} alt="" />
                 <div className={styles.contentArea} >

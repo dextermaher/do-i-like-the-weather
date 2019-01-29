@@ -18,10 +18,7 @@ class ZipCodeForm extends Component {
 
 
     handleFormSubmit = (ev) => {
-        // this.fetchZipCode(ev);
-        console.log("DO ZIP STUFF");
         this.props.onSearch && this.props.onSearch(ev);
-        // this.fetchZipCode(ev);
         this.doClose(ev);
     }
     handleBackgroundClick = (ev) => {
