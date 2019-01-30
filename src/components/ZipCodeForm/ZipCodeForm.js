@@ -16,9 +16,8 @@ class ZipCodeForm extends Component {
         document.removeEventListener("keydown", this.escFunction, false);
     }
 
-
     handleFormSubmit = (ev) => {
-        this.props.onSearch && this.props.onSearch(ev);
+        this.props.onSearch && this.props.onSearch(this.state.zipCode);
         this.doClose(ev);
     }
     handleBackgroundClick = (ev) => {
@@ -44,6 +43,12 @@ class ZipCodeForm extends Component {
         }
     }
 
+    enterButtonForModal = (event) => {
+        if (event.keyCode === 13) {
+            this.handleFormSubmit(event);
+        }
+    }
+
 
     render() {
         const { zipCode } = this.state;
@@ -62,6 +67,7 @@ class ZipCodeForm extends Component {
                         type="text"
                         name="zip"
                         value={zipCode}
+                        onKeyUp={this.enterButtonForModal}
                         onChange={(ev) => {
                             this.setState({ zipCode: ev.target.value });
                         }} />

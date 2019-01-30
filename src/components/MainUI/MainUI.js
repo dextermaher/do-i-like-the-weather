@@ -18,12 +18,12 @@ class MainUI extends Component {
     constructor(props) {
         super(props);
 
+        this.zipCode = 94945;
         this.state = {
             currentTemp: undefined,
             currentConditions: undefined,
             conditionsImageURL: undefined,
             reactionURL: undefined,
-            zipCode: 94945,
             locationKey: '39671_PC',
             updateMins: 10,
             shouldRenderZipCodeForm : false,
@@ -41,13 +41,12 @@ class MainUI extends Component {
                 console.log(er);
             });
     }
+    
+    
     fetchCurrentConditions() {
-        console.log(this.state.locationKey, 'cond for this.state.locationKey');
-
         const url = `http://dataservice.accuweather.com/currentconditions/v1/${this.state.locationKey}?ACCUWE&apikey=rvSVrxAEhkTPZ8Zzou6hLusbiaZAobB9`;
         return fetch(url).then((fresp) => fresp.json())
             .then((cwr) => {
-                console.log(cwr);
                 if (cwr && cwr[0] && cwr[0].Temperature) {
                     this.setState(
                         {
@@ -228,8 +227,8 @@ class MainUI extends Component {
             })
     }
 
-    fetchZipCode = (ev) => {
-        const { zipCode } = this.state;
+    fetchZipCode = () => {
+        const { zipCode } = this;
         // encodeURI('http://www.here.com/this that')
 
         let phrase = zipCode;
@@ -251,22 +250,26 @@ class MainUI extends Component {
                 console.log(er);
             })
     }
-    handleShowHideZipForm = (ev) => {
-            this.setState({ shouldRenderZipCodeForm:!this.state.shouldRenderZipCodeForm });
-            
+    handleShowZipForm = (ev) => {
+        this.setState({ shouldRenderZipCodeForm:true });
     }
 
     handleZipModalClose = () => {
-        this.handleShowHideZipForm();
+        this.setState({ shouldRenderZipCodeForm:false });
     }
+    handleZipModalChangeZip = (newZip) => {
+        this.zipCode =newZip;
+        this.fetchZipCode();
+    }
+
 
     render() {
         const { currentTemp,
             currentConditions,
             conditionsImageURL,
             reactionURL,
-            zipCode,
         } = this.state;
+        const { zipCode} = this;
 
         return (
             <div className={styles.root} >
@@ -274,11 +277,11 @@ class MainUI extends Component {
                 <input className={styles.enterButton}
                     type="image"
                     src='https://cdn4.iconfinder.com/data/icons/web-ui-color/128/Settings-512.png'
-                    onClick={this.handleShowHideZipForm}/>
+                    onClick={this.handleShowZipForm}/>
                 {/* SHOULD WE SHOW ZIP FORM */}
                 {this.state.shouldRenderZipCodeForm && 
                     <ZipCodeForm onClose={this.handleZipModalClose} 
-                                    onSearch={this.fetchZipCode} /> 
+                                    onSearch={this.handleZipModalChangeZip} /> 
 
                 }                
 
