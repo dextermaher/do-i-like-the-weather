@@ -269,12 +269,11 @@ class MainUI extends Component {
             conditionsImageURL,
             reactionURL,
         } = this.state;
-        const { zipCode} = this;
 
         return (
             <div className={styles.root} >
                 
-                <input className={styles.enterButton}
+                <input alt="" className={styles.enterButton}
                     type="image"
                     src='https://cdn4.iconfinder.com/data/icons/web-ui-color/128/Settings-512.png'
                     onClick={this.handleShowZipForm}/>

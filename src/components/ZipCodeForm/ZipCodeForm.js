@@ -5,12 +5,15 @@ import styles from './ZipCodeForm.module.css'
 class ZipCodeForm extends Component {
     constructor(props) {
         super(props);
+        this.bgRef = undefined;
+        this.zipCodeFieldRef = undefined;
         this.state = {
             zipCode: 94945,
         }
     }
     componentDidMount() {
         document.addEventListener("keydown", this.escFunction, false);
+        this.zipCodeFieldRef.focus();   
     }
     componentWillUnmount() {
         document.removeEventListener("keydown", this.escFunction, false);
@@ -25,7 +28,7 @@ class ZipCodeForm extends Component {
             return;
         }
         if (this.state.clickIsOnModal) {
-            this.state.clickIsOnModal = false;
+            this.setState({clickIsOnModal : false});
             return
         }
         else {
@@ -62,12 +65,14 @@ class ZipCodeForm extends Component {
                     <div className={styles.zipLabel}>
                         Zip Code: ({zipCode})
                     </div>
+
                     <input
                         className={styles.zipCode}
                         type="text"
                         name="zip"
                         value={zipCode}
                         onKeyUp={this.enterButtonForModal}
+                        ref={elem => this.zipCodeFieldRef = elem}
                         onChange={(ev) => {
                             this.setState({ zipCode: ev.target.value });
                         }} />
