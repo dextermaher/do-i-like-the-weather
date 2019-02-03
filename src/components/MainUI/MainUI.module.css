@@ -61,4 +61,13 @@
     position: absolute;
     top: 8px;
     left: 8px;
+    transition: all 200ms; 
+
+}
+.enterButton:hover {
+    /* transform: scale(2) rotate(20deg); */
+    transform: rotate(20deg);
+    transform: scale(1.4) rotate(180deg);
+    transition: all 500ms; 
+
 }
