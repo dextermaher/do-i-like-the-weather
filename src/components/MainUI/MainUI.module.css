@@ -18,7 +18,7 @@
 }
 .contentArea {
     width: 50%;
-
+    /* transition: width 335ms */
 }
 .reactionImage {
     width: 100%;
@@ -33,6 +33,12 @@
     background: #dad9dc5c;
     margin-top: 1em;
     border-radius: 30px;
+    background: rgba(255, 255, 255, 0.561);
+}
+.conditionsArea:hover {
+    background: #ffffff;
+    transform: scale(1.03) rotate(2deg);
+    transition: all 90ms; 
 }
 .tempurature {
     font-family: 'Fredoka One', sans-serif;
@@ -62,12 +68,21 @@
     top: 8px;
     left: 8px;
     transition: all 200ms; 
-
 }
 .enterButton:hover {
-    /* transform: scale(2) rotate(20deg); */
-    transform: rotate(20deg);
     transform: scale(1.4) rotate(180deg);
     transition: all 500ms; 
-
 }
+
+
+@media only screen and (max-width: 600px) {
+    .contentArea {
+        width: 80%;
+        transition: width 665ms;
+    }
+    .conditionsArea {
+        flex-direction: column;
+        
+    }
+}
+

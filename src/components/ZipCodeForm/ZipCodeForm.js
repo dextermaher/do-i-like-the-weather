@@ -67,7 +67,7 @@ class ZipCodeForm extends Component {
                     </div>
 
                     <input
-                        className={styles.zipCode}
+                        className={styles.zipCodeField}
                         type="text"
                         name="zip"
                         value={zipCode}

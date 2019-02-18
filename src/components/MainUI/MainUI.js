@@ -31,6 +31,9 @@ class MainUI extends Component {
         this.updateWeatherInfo();
     }
     updateWeatherInfo() {
+
+
+
         this.fetchCurrentConditions()
             .then(() => {
                 this.fetchBackgroundImage();
@@ -41,7 +44,6 @@ class MainUI extends Component {
                 console.log(er);
             });
     }
-    
     
     fetchCurrentConditions() {
         const url = `http://dataservice.accuweather.com/currentconditions/v1/${this.state.locationKey}?ACCUWE&apikey=rvSVrxAEhkTPZ8Zzou6hLusbiaZAobB9`;
@@ -59,16 +61,6 @@ class MainUI extends Component {
             .catch((er) => {
                 console.log(er);
             })
-    }
-    rand(min, max) {
-        return Math.floor(Math.random() * (max - min) + min);
-    }
-    randItem(array) {
-        if (!array || !array.length) {
-            return null;
-        }
-
-        return array[this.rand(0, array.length - 1)];
     }
     startUpdateTimer(){
         setTimeout(() => {
@@ -146,7 +138,7 @@ class MainUI extends Component {
 
         fetch(photoDataUrl).then((fresp) => fresp.json())
             .then((flickrSearchResponse) => {
-                const photoData = this.randItem(flickrSearchResponse.photos.photo);
+                const photoData = randItem(flickrSearchResponse.photos.photo);
                 const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
                 this.setState({ conditionsImageURL: photoUrl })
             })
@@ -155,10 +147,14 @@ class MainUI extends Component {
             })
     }
 
-    fetchReactionImage() {
+    fetchReactionImage = () => {
         const { currentConditions } = this.state;
         let conditionCode = null;
 
+        if(!currentConditions) {
+            console.warn('No Current Condition');
+            return;
+        }
 
         // MAP CONDITIONS
         switch (currentConditions.toLowerCase()) {
@@ -218,7 +214,7 @@ class MainUI extends Component {
         const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
             .then((flickrSearchResponse) => {
-                const photoData = this.randItem(flickrSearchResponse.photos.photo);
+                const photoData = randItem(flickrSearchResponse.photos.photo);
                 const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
                 this.setState({ reactionURL: photoUrl })
             })
@@ -284,9 +280,15 @@ class MainUI extends Component {
 
                 }                
 
-                <img className={styles.backgroundImage} src={conditionsImageURL} alt="" />
+                <img className={styles.backgroundImage} 
+                    src={conditionsImageURL} 
+                    alt="" />
                 <div className={styles.contentArea} >
-                    <img alt="" className={styles.reactionImage} src={reactionURL} />
+                    <img    alt="" 
+                            className={styles.reactionImage} 
+                            src={reactionURL}
+                            onClick={this.fetchReactionImage}
+                            />
 
                     <div className={styles.conditionsArea} >
                         <div className={styles.tempurature} >
@@ -303,3 +305,19 @@ class MainUI extends Component {
 }
 
 export default MainUI;
+
+
+
+
+function rand(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+}
+function randItem(array) {
+    if (!array || !array.length) {
+        return null;
+    }
+    return array[rand(0, array.length - 1)];
+}
+
+
+
