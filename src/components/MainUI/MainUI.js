@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ZipCodeForm from '../ZipCodeForm/ZipCodeForm'
 import styles from './MainUI.module.css';
+import Loader from 'react-loader-spinner'
 
 const HOWIFEEL = {
     SUNNY: 'HAPPY',
@@ -27,27 +28,42 @@ class MainUI extends Component {
             locationKey: '39671_PC',
             updateMins: 10,
             shouldRenderZipCodeForm : false,
+            isPullingData : false,
         }
+    }
+    componentDidMount() {
         this.updateWeatherInfo();
     }
+    
     updateWeatherInfo() {
 
 
+        this.setState({isPullingData : true});
 
         this.fetchCurrentConditions()
             .then(() => {
-                this.fetchBackgroundImage();
+                this.fetchBackgroundImage()
+                    .then(() => {
+                        this.setState({isPullingData : false});
+                    })
+                    .catch(() => {
+                        this.setState({isPullingData : false});
+                    });
                 this.fetchReactionImage();
                 this.startUpdateTimer();
+
             })
             .catch((er) => {
                 console.log(er);
             });
     }
     
+
+    /** FETCHERS */
     fetchCurrentConditions() {
         const url = `http://dataservice.accuweather.com/currentconditions/v1/${this.state.locationKey}?ACCUWE&apikey=rvSVrxAEhkTPZ8Zzou6hLusbiaZAobB9`;
-        return fetch(url).then((fresp) => fresp.json())
+        return fetch(url)
+            .then((fresp) => fresp.json())
             .then((cwr) => {
                 if (cwr && cwr[0] && cwr[0].Temperature) {
                     this.setState(
@@ -136,8 +152,9 @@ class MainUI extends Component {
         // const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=22a8a26f96dfb6b035ab2bb1d50cbaae&group_id=86784386%40N00&tags=${phrase}&format=json&nojsoncallback=1&auth_token=72157702443479932-3fd7fd021c6a37b4&api_sig=283a10c6b65776d3411f07ec924ec1b3`;
         const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&text=${phrase}&format=json&nojsoncallback=1&perpage=5`;
 
-        fetch(photoDataUrl).then((fresp) => fresp.json())
-            .then((flickrSearchResponse) => {
+        return fetch(photoDataUrl)
+            .then((fresp) => fresp.json())
+            .then( (flickrSearchResponse) => {
                 const photoData = randItem(flickrSearchResponse.photos.photo);
                 const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
                 this.setState({ conditionsImageURL: photoUrl })
@@ -146,7 +163,6 @@ class MainUI extends Component {
                 console.log(er);
             })
     }
-
     fetchReactionImage = () => {
         const { currentConditions } = this.state;
         let conditionCode = null;
@@ -222,7 +238,6 @@ class MainUI extends Component {
                 console.log(er);
             })
     }
-
     fetchZipCode = () => {
         const { zipCode } = this;
         // encodeURI('http://www.here.com/this that')
@@ -246,10 +261,12 @@ class MainUI extends Component {
                 console.log(er);
             })
     }
+
+
+    /** HANDLERS */
     handleShowZipForm = (ev) => {
         this.setState({ shouldRenderZipCodeForm:true });
     }
-
     handleZipModalClose = () => {
         this.setState({ shouldRenderZipCodeForm:false });
     }
@@ -259,52 +276,88 @@ class MainUI extends Component {
     }
 
 
+    /** RENDERERS */
     render() {
-        const { currentTemp,
-            currentConditions,
-            conditionsImageURL,
-            reactionURL,
-        } = this.state;
+        const { conditionsImageURL, } = this.state;
 
         return (
             <div className={styles.root} >
-                
+
+                {/* CONFIG BUTTON */}
                 <input alt="" className={styles.enterButton}
                     type="image"
                     src='https://cdn4.iconfinder.com/data/icons/web-ui-color/128/Settings-512.png'
                     onClick={this.handleShowZipForm}/>
+
+
                 {/* SHOULD WE SHOW ZIP FORM */}
-                {this.state.shouldRenderZipCodeForm && 
-                    <ZipCodeForm onClose={this.handleZipModalClose} 
-                                    onSearch={this.handleZipModalChangeZip} /> 
+                {this.renderZipForm()}                
 
-                }                
-
+                {/* BACKGROUND IMAGE */}
                 <img className={styles.backgroundImage} 
                     src={conditionsImageURL} 
                     alt="" />
-                <div className={styles.contentArea} >
-                    <img    alt="" 
-                            className={styles.reactionImage} 
-                            src={reactionURL}
-                            onClick={this.fetchReactionImage}
-                            />
+                
 
-                    <div className={styles.conditionsArea} >
-                        <div className={styles.tempurature} >
-                            {currentTemp}
-                        </div>
-                        <div className={styles.condition} >
-                            {currentConditions}
-                        </div>
+                {/* FRONT IMAGE AND CONDITIONS */}
+                {this.renderContentArea()}
+
+
+                {/* LOADING ICON */}
+                {this.renderLoadingIcon()}
+            </div>
+        );
+    }
+    renderLoadingIcon() {
+        const {isPullingData} = this.state;
+        if ( !isPullingData) return null;
+
+        return (
+            <Loader type="Triangle" color="black" height={80} width={80} />
+        );
+    }
+    renderZipForm() {
+
+        const shouldShowForm = this.state.shouldRenderZipCodeForm;
+
+        if (!shouldShowForm) return null;
+
+        return (
+            <ZipCodeForm 
+                onClose={this.handleZipModalClose} 
+                onSearch={this.handleZipModalChangeZip} />    
+        );
+    }
+    renderContentArea() {
+        const { currentTemp,
+            currentConditions,
+            reactionURL,
+        } = this.state;
+        
+        return (
+            <div className={styles.contentArea} >
+                {/* FRONT IMAGE */}
+                <img    alt="" 
+                        className={styles.reactionImage} 
+                        src={reactionURL}
+                        onClick={this.fetchReactionImage}
+                        />
+
+                {/* WEATHER CONDITIONS */}
+                <div className={styles.conditionsArea} >
+                    <div className={styles.tempurature} >
+                        {currentTemp}
+                    </div>
+                    <div className={styles.condition} >
+                        {currentConditions}
                     </div>
                 </div>
             </div>
         );
     }
 }
-
-export default MainUI;
+    
+    export default MainUI;
 
 
 

@@ -86,3 +86,9 @@
     }
 }
 
+.Loader:disabled {
+display: none;
+}
+.Loader:active {
+    /* position: absolute; */
+}
