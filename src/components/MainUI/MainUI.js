@@ -142,7 +142,7 @@ class MainUI extends Component {
         console.log(conditionCode);
 
         // encodeURI('http://www.here.com/this that')
-        let phrase = `${conditionCode || 'foggy'} landscape`;
+        let phrase = `${conditionCode || 'sunny'} landscape`;
         // phrase = 'rain';
         // phrase = 'cloudy';
         // phrase = 'snow';
@@ -150,13 +150,20 @@ class MainUI extends Component {
         // phrase='person';
         // todo: use flickr group to search
         // const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.groups.pools.getPhotos&api_key=22a8a26f96dfb6b035ab2bb1d50cbaae&group_id=86784386%40N00&tags=${phrase}&format=json&nojsoncallback=1&auth_token=72157702443479932-3fd7fd021c6a37b4&api_sig=283a10c6b65776d3411f07ec924ec1b3`;
-        const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&text=${phrase}&format=json&nojsoncallback=1&perpage=5`;
-
+        // const photoDataUrl = `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&text=${phrase}&format=json&nojsoncallback=1&perpage=5`;
+        
+        const now = new Date();
+        if (now.getHours() >= 17) {
+            phrase += ' night';
+        }
+        const photoDataUrl = `https://api.unsplash.com/search/photos?client_id=b6ddad0a16067608ae5f4638eb3405e87a82d7c4ef64da727f2cd4e524f9d33e&query=${phrase}`;
+        
         return fetch(photoDataUrl)
             .then((fresp) => fresp.json())
-            .then( (flickrSearchResponse) => {
-                const photoData = randItem(flickrSearchResponse.photos.photo);
-                const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
+            .then( (backgroundSearchResponse) => {
+                // const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
+                const photoData = randItem(backgroundSearchResponse.results);
+                const photoUrl = photoData.links.download;
                 this.setState({ conditionsImageURL: photoUrl })
             })
             .catch((er) => {
@@ -227,11 +234,14 @@ class MainUI extends Component {
 
         let phrase = `${conditionCode || 'foggy'} dog`;
 
-        const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
+        // const photoDataUrl = `https://api.flickr.com/services/rest/?REACTION&text=${phrase}&method=flickr.photos.search&api_key=c69b8f9f5fee24232d061c0133679430&format=json&nojsoncallback=1`;
+        const photoDataUrl = `https://api.unsplash.com/search/photos?client_id=b6ddad0a16067608ae5f4638eb3405e87a82d7c4ef64da727f2cd4e524f9d33e&query=${phrase}`;
         fetch(photoDataUrl).then((fresp) => fresp.json())
-            .then((flickrSearchResponse) => {
-                const photoData = randItem(flickrSearchResponse.photos.photo);
-                const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
+            .then((backgroundSearchResponse) => {
+                // const photoData = randItem(backgroundSearchResponse.photos.photo);
+                // const photoUrl = `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${photoData.id}_${photoData.secret}.jpg`;
+                const photoData = randItem(backgroundSearchResponse.results);
+                const photoUrl = photoData.links.download;
                 this.setState({ reactionURL: photoUrl })
             })
             .catch((er) => {
