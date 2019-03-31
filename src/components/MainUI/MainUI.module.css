@@ -1,94 +1,87 @@
 .root {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    flex-direction: column;
-    color: black;
-    font-family: 'Montserrat', sans-serif;
-    
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-direction: column;
+  color: black;
+  font-family: "Montserrat", sans-serif;
 }
 .backgroundImage {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: -1; 
-
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: -1;
 }
 .contentArea {
-    width: 50%;
-    /* transition: width 335ms */
+  width: 50%;
+  /* transition: width 335ms */
 }
 .reactionImage {
-    width: 100%;
-    border-radius: 30px;
+  width: 100%;
+  border-radius: 30px;
 }
 .conditionsArea {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3em;
-    color: #0e0e0e;
-    background: #dad9dc5c;
-    margin-top: 1em;
-    border-radius: 30px;
-    background: rgba(255, 255, 255, 0.561);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+  color: #0e0e0e;
+  background: #dad9dc5c;
+  margin-top: 1em;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.561);
 }
 .conditionsArea:hover {
-    background: #ffffff;
-    transform: scale(1.03) rotate(2deg);
-    transition: all 90ms; 
+  background: #ffffff;
+  transform: scale(1.03) rotate(2deg);
+  transition: all 90ms;
 }
 .tempurature {
-    font-family: 'Fredoka One', sans-serif;
-
+  font-family: "Fredoka One", sans-serif;
 }
 .condition {
-    margin-left: 0.5em;
-    font-family: 'Montserrat', sans-serif;
+  margin-left: 0.5em;
+  font-family: "Montserrat", sans-serif;
 }
 .zipCode {
-    /* position: absolute; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: rgb(255, 0, 170);
-    border: 2px solid rgb(98, 0, 255);
-    border-radius: 4px;
-    
+  /* position: absolute; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgb(255, 0, 170);
+  border: 2px solid rgb(98, 0, 255);
+  border-radius: 4px;
 }
 .zipLabel {
-    font-size : 1em;
+  font-size: 1em;
 }
 .enterButton {
-    width: 3em;
-    height: 3em;
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    transition: all 200ms; 
+  width: 3em;
+  height: 3em;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  transition: all 200ms;
 }
 .enterButton:hover {
-    transform: scale(1.4) rotate(180deg);
-    transition: all 500ms; 
+  transform: scale(1.4) rotate(180deg);
+  transition: all 500ms;
 }
 
-
 @media only screen and (max-width: 600px) {
-    .contentArea {
-        width: 80%;
-        transition: width 665ms;
-    }
-    .conditionsArea {
-        flex-direction: column;
-        
-    }
+  .contentArea {
+    width: 80%;
+    transition: width 665ms;
+  }
+  .conditionsArea {
+    flex-direction: column;
+  }
 }
 
 .Loader:disabled {
-display: none;
+  display: none;
 }
-.Loader:active {
-    /* position: absolute; */
-}
+/* .Loader:active {
+    position: absolute;
+} */
